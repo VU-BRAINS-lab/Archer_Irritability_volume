@@ -1,0 +1,74 @@
+TITLE: Volume and Irritability;
+
+DATA:  FILE is sex.diff.dat;
+
+VARIABLE: NAMES ARE 
+
+subnum_char_b age_b FEMALE_b PSWEIGHT_b FAMID_b siten_b
+NHWHITE_b AFRICAN_b HISPANIC_b cbcl_q03_p_b cbcl_q86_p_b 
+cbcl_q87_p_b cbcl_q88_p_b cbcl_q95_p_b TICV_b
+COIL2_b COIL3_b COIL4_b COIL5_b income_b parent_education_b
+medication_b fsqc_qu_motion_b wt_NR_mwacs_b 
+vol_1 vol_2 vol_3 vol_4 vol_5 vol_6 vol_7 vol_8 vol_9
+vol_10 vol_11 vol_12 vol_13 vol_14 vol_15 vol_16 vol_17
+vol_18 vol_19 vol_20 vol_21 vol_22 vol_23 vol_24 vol_25
+vol_26 vol_27 vol_28 vol_29 vol_30 vol_31 vol_32 vol_33
+vol_34 vol_35 vol_36 vol_37 vol_38 vol_39 vol_40 vol_41
+vol_42 vol_43 vol_44 vol_45 vol_46 vol_47 vol_48 vol_49
+vol_50 vol_51 vol_52 vol_53 vol_54 vol_55 vol_56 vol_57
+vol_58 vol_59 vol_60 vol_61 vol_62 vol_63 vol_64 vol_65
+vol_66 vol_67 vol_68 vol_107 vol_112 vol_113 vol_114 vol_115
+vol_116 vol_119 vol_120 vol_121 vol_124 vol_125 vol_130
+vol_131 vol_132 vol_133 vol_134 vol_135 vol_136 vol_138
+vol_139 vol_1_r vol_2_r vol_3_r vol_4_r vol_5_r
+vol_6_r vol_7_r vol_8_r vol_9_r vol_10_r vol_11_r vol_12_r
+vol_13_r vol_14_r vol_15_r vol_16_r vol_17_r vol_18_r vol_19_r 
+vol_20_r vol_21_r vol_22_r vol_23_r vol_24_r vol_25_r vol_26_r
+vol_27_r vol_28_r vol_29_r vol_30_r vol_31_r vol_32_r vol_33_r
+vol_34_r vol_35_r vol_36_r vol_37_r vol_38_r vol_39_r vol_40_r
+vol_41_r vol_42_r vol_43_r vol_44_r vol_45_r vol_46_r vol_47_r
+vol_48_r vol_49_r vol_50_r vol_51_r vol_52_r vol_53_r vol_54_r
+vol_55_r vol_56_r vol_57_r vol_58_r vol_59_r vol_60_r vol_61_r
+vol_62_r vol_63_r vol_64_r vol_65_r vol_66_r vol_67_r vol_68_r
+vol_107_r vol_112_r vol_113_r vol_114_r vol_115_r vol_116_r
+vol_119_r vol_120_r vol_121_r vol_124_r vol_125_r vol_130_r
+vol_131_r vol_132_r vol_133_r vol_134_r vol_135_r vol_136_r
+vol_138_r vol_139_r vol_7r_female vol_23r_female vol_29r_female
+vol_30r_female vol_41r_female vol_42r_female vol_48r_female
+vol_55r_female vol_56r_female vol_57r_female;
+
+    USEVARIABLES ARE
+    FEMALE_b
+    cbcl_q03_p_b cbcl_q86_p_b 
+    cbcl_q87_p_b cbcl_q88_p_b cbcl_q95_p_b wt_NR_mwacs_b
+    vol_7_r vol_7r_female;
+
+    CATEGORICAL= cbcl_q03_p_b cbcl_q86_p_b
+    cbcl_q87_p_b cbcl_q88_p_b cbcl_q95_p_b;
+
+    MISSING ARE .;
+      WEIGHT = wt_NR_mwacs_b;
+      STRATIFICATION=siten_b;
+      IDVARIABLE = subnum_char_b;
+      CLUSTER=FAMID_b;
+
+      DEFINE: STANDARDIZE
+      vol_7_r vol_7r_female;
+      
+      ANALYSIS:
+      ESTIMATOR=WLSMV;
+      ITERATIONS=500000;
+      TYPE = COMPLEX;
+
+    MODEL:
+    [IRRITABILITY@0];
+     IRRITABILITY@1;
+
+   IRRITABILITY BY
+   cbcl_q03_p_b* cbcl_q86_p_b
+   cbcl_q87_p_b cbcl_q88_p_b cbcl_q95_p_b;
+
+
+   IRRITABILITY ON vol_7_r FEMALE_b vol_7r_female 
+   
+OUTPUT: SAMPSTAT STDYX;
