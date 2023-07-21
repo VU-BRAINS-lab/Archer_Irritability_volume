@@ -1,0 +1,65 @@
+TITLE: CT and Irritability;
+
+
+DATA:  FILE is ct.residual.dat;
+
+VARIABLE: NAMES ARE 
+
+subnum_char_b age_b FEMALE_b PSWEIGHT_b FAMID_b siten_b
+NHWHITE_b AFRICAN_b HISPANIC_b cbcl_q03_p_b cbcl_q86_p_b 
+cbcl_q87_p_b cbcl_q88_p_b cbcl_q95_p_b TICV_b
+COIL2_b COIL3_b COIL4_b COIL5_b income_b parent_education_b
+medication_b fsqc_qu_motion_b wt_NR_mwacs_b 
+ct_1 ct_2 ct_3 ct_4 ct_5 ct_6 ct_7 ct_8 ct_9
+ct_10 ct_11 ct_12 ct_13 ct_14 ct_15 ct_16 ct_17
+ct_18 ct_19 ct_20 ct_21 ct_22 ct_23 ct_24 ct_25
+ct_26 ct_27 ct_28 ct_29 ct_30 ct_31 ct_32 ct_33
+ct_34 ct_35 ct_36 ct_37 ct_38 ct_39 ct_40 ct_41
+ct_42 ct_43 ct_44 ct_45 ct_46 ct_47 ct_48 ct_49
+ct_50 ct_51 ct_52 ct_53 ct_54 ct_55 ct_56 ct_57
+ct_58 ct_59 ct_60 ct_61 ct_62 ct_63 ct_64 ct_65
+ct_66 ct_67 ct_68 ct_1_r ct_2_r ct_3_r ct_4_r ct_5_r
+ct_6_r ct_7_r ct_8_r ct_9_r ct_10_r ct_11_r ct_12_r
+ct_13_r ct_14_r ct_15_r ct_16_r ct_17_r ct_18_r ct_19_r 
+ct_20_r ct_21_r ct_22_r ct_23_r ct_24_r ct_25_r ct_26_r
+ct_27_r ct_28_r ct_29_r ct_30_r ct_31_r ct_32_r ct_33_r
+ct_34_r ct_35_r ct_36_r ct_37_r ct_38_r ct_39_r ct_40_r
+ct_41_r ct_42_r ct_43_r ct_44_r ct_45_r ct_46_r ct_47_r
+ct_48_r ct_49_r ct_50_r ct_51_r ct_52_r ct_53_r ct_54_r
+ct_55_r ct_56_r ct_57_r ct_58_r ct_59_r ct_60_r ct_61_r
+ct_62_r ct_63_r ct_64_r ct_65_r ct_66_r ct_67_r ct_68_r;
+
+    USEVARIABLES ARE
+    cbcl_q03_p_b cbcl_q86_p_b 
+    cbcl_q87_p_b cbcl_q88_p_b cbcl_q95_p_b wt_NR_mwacs_b
+    ct_1_r;
+
+    CATEGORICAL= cbcl_q03_p_b cbcl_q86_p_b
+    cbcl_q87_p_b cbcl_q88_p_b cbcl_q95_p_b;
+
+    MISSING ARE .;
+      WEIGHT = wt_NR_mwacs_b;
+      STRATIFICATION=siten_b;
+      IDVARIABLE = subnum_char_b;
+      CLUSTER=FAMID_b;
+
+      DEFINE: STANDARDIZE
+      ct_1_r;
+      
+      ANALYSIS:
+      ESTIMATOR=WLSMV;
+      ITERATIONS=500000;
+      TYPE = COMPLEX;
+
+    MODEL:
+    [IRRITABILITY@0];
+     IRRITABILITY@1;
+
+   IRRITABILITY BY
+   cbcl_q03_p_b* cbcl_q86_p_b
+   cbcl_q87_p_b cbcl_q88_p_b cbcl_q95_p_b;
+
+
+   IRRITABILITY ON ct_1_r 
+   
+OUTPUT: SAMPSTAT STDYX;
