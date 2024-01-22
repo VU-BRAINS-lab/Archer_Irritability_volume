@@ -1,4 +1,4 @@
-#This script residualizes the data to prepare it for various iterations of analyses
+#Irritability and CT
 library(tidyverse)
 library(stats)
 library(na.tools)
@@ -17,7 +17,7 @@ indx<-sapply(data, is.character)
 data[indx]<-lapply(data[indx], function(x) as.numeric(x))
 
 # make data frame of variables
-irritability.data<-data[,c(2:4,6,7,10,12:14,36,126:128,135,297,305:309,311,314,317,1003,1570:1637)]
+irritability.data<-data[,c(2:4,6,7,10,12:14,36,126:128,135,297,305:309,311,314,317,1003,1007,1570:1637)]
 irritability.data<-as.data.frame(irritability.data)
 irritability.data <- irritability.data %>% rename("ct_1" = "smri_thick_cdk_banksstslh_b", 
                                                   "ct_2" = "smri_thick_cdk_cdacatelh_b",
@@ -88,6 +88,8 @@ irritability.data <- irritability.data %>% rename("ct_1" = "smri_thick_cdk_banks
                                                   "ct_67" = "smri_thick_cdk_trvtmrh_b", 
                                                   "ct_68" = "smri_thick_cdk_insularh_b")
 #VERIFY VARIABLE TYPES
+irritability.data<-irritability.data[!is.na(irritability.data$wt_NR_mwacs_b),]
+irritability.data[is.na(irritability.data)]<-"."
 irritability.data$FEMALE_b <- as.factor(irritability.data$FEMALE_b)
 irritability.data$NHWHITE_b <- as.factor(irritability.data$NHWHITE_b)
 irritability.data$HISPANIC_b <- as.factor(irritability.data$HISPANIC_b)
@@ -98,99 +100,5 @@ irritability.data$COIL3_b <- as.factor(irritability.data$COIL3_b)
 irritability.data$COIL4_b <- as.factor(irritability.data$COIL4_b)
 irritability.data$COIL5_b <- as.factor(irritability.data$COIL5_b)
 
-#CREATE RESIDUALS FOR PRIMARY ANALYSIS
-
-#run residualization
-Y.primary <- as.matrix(irritability.data[c(25:92)])
-lm.tores.primary <- lm(Y.primary ~ age_b + FEMALE_b + NHWHITE_b + AFRICAN_b + HISPANIC_b + 
-                         COIL2_b + COIL3_b + COIL4_b + COIL5_b + parent_education_b + medication_b + TICV_b, data = irritability.data)
-lm.residuals.primary <- lm.tores.primary$residuals
-#add residuals matrix to the data frame and rename the data frame
-ct.residual <- irritability.data %>% spread_residuals(lm.tores.primary)
-#condense new data frame to just sub_num, weight, and residual column
-ct.residual <- ct.residual[c(grep("subnum_char_b|wt_NR_mwacs_b|lm.tores.primary", names(ct.residual)))]
-#omit cases with NAs in row
-ct.residual <- na.omit(ct.residual)
-#save csv file with sub ID, weight, and all residuals
-write.csv(ct.residual,"ct.residual.csv", row.names = FALSE)
-ct.residual<-read.csv('ct.residual.csv')
-ct.residual <-(ct.residual[c(1,3:70)])
-
-#rename
-ct.residual <- ct.residual %>% rename("ct_1_r" = "lm.tores.primary.ct_1", 
-                                                                "ct_2_r" = "lm.tores.primary.ct_2",
-                                                                "ct_3_r" = "lm.tores.primary.ct_3", 
-                                                                "ct_4_r" = "lm.tores.primary.ct_4",
-                                                                "ct_5_r" = "lm.tores.primary.ct_5", 
-                                                                "ct_6_r" = "lm.tores.primary.ct_6",
-                                                                "ct_7_r" = "lm.tores.primary.ct_7",
-                                                                "ct_8_r" = "lm.tores.primary.ct_8",
-                                                                "ct_9_r" = "lm.tores.primary.ct_9", 
-                                                                "ct_10_r" = "lm.tores.primary.ct_10",
-                                                                "ct_11_r" = "lm.tores.primary.ct_11", 
-                                                                "ct_12_r" = "lm.tores.primary.ct_12",
-                                                                "ct_13_r" = "lm.tores.primary.ct_13", 
-                                                                "ct_14_r" = "lm.tores.primary.ct_14",
-                                                                "ct_15_r" = "lm.tores.primary.ct_15", 
-                                                                "ct_16_r" = "lm.tores.primary.ct_16",
-                                                                "ct_17_r" = "lm.tores.primary.ct_17", 
-                                                                "ct_18_r" = "lm.tores.primary.ct_18",
-                                                                "ct_19_r" = "lm.tores.primary.ct_19", 
-                                                                "ct_20_r" = "lm.tores.primary.ct_20",
-                                                                "ct_21_r" = "lm.tores.primary.ct_21", 
-                                                                "ct_22_r" = "lm.tores.primary.ct_22",
-                                                                "ct_23_r" = "lm.tores.primary.ct_23", 
-                                                                "ct_24_r" = "lm.tores.primary.ct_24",
-                                                                "ct_25_r" = "lm.tores.primary.ct_25", 
-                                                                "ct_26_r" = "lm.tores.primary.ct_26",
-                                                                "ct_27_r" = "lm.tores.primary.ct_27", 
-                                                                "ct_28_r" = "lm.tores.primary.ct_28",
-                                                                "ct_29_r" = "lm.tores.primary.ct_29", 
-                                                                "ct_30_r" = "lm.tores.primary.ct_30",
-                                                                "ct_31_r" = "lm.tores.primary.ct_31", 
-                                                                "ct_32_r" = "lm.tores.primary.ct_32",
-                                                                "ct_33_r" = "lm.tores.primary.ct_33", 
-                                                                "ct_34_r" = "lm.tores.primary.ct_34",
-                                                                "ct_35_r" = "lm.tores.primary.ct_35", 
-                                                                "ct_36_r" = "lm.tores.primary.ct_36",
-                                                                "ct_37_r" = "lm.tores.primary.ct_37", 
-                                                                "ct_38_r" = "lm.tores.primary.ct_38",
-                                                                "ct_39_r" = "lm.tores.primary.ct_39", 
-                                                                "ct_40_r" = "lm.tores.primary.ct_40",
-                                                                "ct_41_r" = "lm.tores.primary.ct_41", 
-                                                                "ct_42_r" = "lm.tores.primary.ct_42",
-                                                                "ct_43_r" = "lm.tores.primary.ct_43", 
-                                                                "ct_44_r" = "lm.tores.primary.ct_44",
-                                                                "ct_45_r" = "lm.tores.primary.ct_45", 
-                                                                "ct_46_r" = "lm.tores.primary.ct_46",
-                                                                "ct_47_r" = "lm.tores.primary.ct_47", 
-                                                                "ct_48_r" = "lm.tores.primary.ct_48",
-                                                                "ct_49_r" = "lm.tores.primary.ct_49", 
-                                                                "ct_50_r" = "lm.tores.primary.ct_50",
-                                                                "ct_51_r" = "lm.tores.primary.ct_51", 
-                                                                "ct_52_r" = "lm.tores.primary.ct_52",
-                                                                "ct_53_r" = "lm.tores.primary.ct_53", 
-                                                                "ct_54_r" = "lm.tores.primary.ct_54",
-                                                                "ct_55_r" = "lm.tores.primary.ct_55", 
-                                                                "ct_56_r" = "lm.tores.primary.ct_56",
-                                                                "ct_57_r" = "lm.tores.primary.ct_57", 
-                                                                "ct_58_r" = "lm.tores.primary.ct_58",
-                                                                "ct_59_r" = "lm.tores.primary.ct_59", 
-                                                                "ct_60_r" = "lm.tores.primary.ct_60",
-                                                                "ct_61_r" = "lm.tores.primary.ct_61", 
-                                                                "ct_62_r" = "lm.tores.primary.ct_62",
-                                                                "ct_63_r" = "lm.tores.primary.ct_63", 
-                                                                "ct_64_r" = "lm.tores.primary.ct_64",
-                                                                "ct_65_r" = "lm.tores.primary.ct_65", 
-                                                                "ct_66_r" = "lm.tores.primary.ct_66",
-                                                                "ct_67_r" = "lm.tores.primary.ct_67", 
-                                                                "ct_68_r" = "lm.tores.primary.ct_68")
-write.csv(ct.residual,"ct.residual.csv", row.names = FALSE)
-
-ct.residual<-read.csv('ct.residual.csv')
-ct.residual<- merge(irritability.data, ct.residual, by = "subnum_char_b")
 # replace NA with .
-ct.residual[is.na(ct.residual)]<-"."
-write.csv(ct.residual,"ct.residual.csv", row.names = FALSE)
-#write_csv(main.data, "irritability_new_data.csv")
-write.dat(ct.residual, "ct.residual")
+write.dat(irritability.data, "irritability.ct")
