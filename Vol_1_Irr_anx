@@ -1,0 +1,62 @@
+TITLE: Volume and Irritability;
+
+
+DATA:  FILE is irritability.data.dat;
+
+VARIABLE: NAMES ARE 
+
+subnum_char_b age_b FEMALE_b np_ps_weight FAMID_b siten_b
+NHWHITE_b AFRICAN_b HISPANIC_b OTHER_b TICV_b
+COIL2_b COIL3_b COIL4_b COIL5_b income_b parent_education_b
+medication_b fsqc_qu_motion_b 
+vol_1 vol_35 vol_2 vol_36 vol_3 vol_37 vol_4 vol_38 vol_5
+vol_39 vol_31 vol_65 vol_6 vol_40 vol_7 vol_41 vol_8 vol_42
+vol_9 vol_43 vol_34 vol_68 vol_12 vol_46 vol_11 vol_45 vol_10
+vol_44 vol_14 vol_48 vol_13 vol_47 vol_16 vol_50 vol_15 vol_49
+vol_18 vol_52 vol_17 vol_51 vol_19 vol_53 vol_24 vol_58 vol_20
+vol_54 vol_21 vol_55 vol_23 vol_57 vol_22 vol_56 vol_25 vol_59 
+vol_26 vol_60 vol_30 vol_64 vol_27 vol_61 vol_28 vol_62 vol_29
+vol_63 vol_32 vol_66 vol_33 vol_67 vol_124 vol_138 vol_121 vol_136
+vol_119 vol_114 vol_132 vol_112 vol_130 vol_120 vol_135 vol_116 vol_134
+vol_115 vol_133 vol_113 vol_131 vol_125 vol_139 cbcl_q03_p_3 cbcl_q03_p_b
+cbcl_q86_p_3 cbcl_q86_p_b cbcl_q87_p_3 cbcl_q87_p_b cbcl_q88_p_3
+cbcl_q88_p_b cbcl_q95_p_3 cbcl_q95_p_b cbcl_sum_3 cbcl_sum_b irr_3  
+       irr_b cbcl_scr_dsm5_anxdisord_r_3 cbcl_scr_dsm5_anxdisord_r_b 
+       cbcl_scr_dsm5_depress_r_3 cbcl_scr_dsm5_depress_r_b;
+
+    USEVARIABLES ARE
+    cbcl_q03_p_b cbcl_q86_p_b cbcl_q87_p_b cbcl_q88_p_b cbcl_q95_p_b
+    vol_1 age_b FEMALE_b NHWHITE_b AFRICAN_b HISPANIC_b TICV_b
+    COIL2_b COIL3_b COIL4_b COIL5_b parent_education_b
+    medication_b cbcl_scr_dsm5_anxdisord_r_b;
+
+    CATEGORICAL= cbcl_q03_p_b cbcl_q86_p_b cbcl_q87_p_b 
+    cbcl_q88_p_b cbcl_q95_p_b;
+
+    MISSING ARE .;
+      WEIGHT = np_ps_weight;
+      STRATIFICATION=siten_b;
+      IDVARIABLE = subnum_char_b;
+      CLUSTER=FAMID_b;
+
+      DEFINE: STANDARDIZE
+      vol_1 TICV_b;
+      
+      ANALYSIS:
+      ESTIMATOR=WLSMV;
+      ITERATIONS=500000;
+      TYPE = COMPLEX;
+
+    MODEL:
+  [IRRITABILITY@0];
+   IRRITABILITY@1;
+  
+  IRRITABILITY BY
+  cbcl_q03_p_b* cbcl_q86_p_b
+  cbcl_q87_p_b cbcl_q88_p_b cbcl_q95_p_b;
+  
+   IRRITABILITY ON vol_1 age_b FEMALE_b NHWHITE_b AFRICAN_b HISPANIC_b TICV_b
+    COIL2_b COIL3_b COIL4_b COIL5_b parent_education_b
+    medication_b cbcl_scr_dsm5_anxdisord_r_b; 
+   
+OUTPUT: SAMPSTAT STDYX;
